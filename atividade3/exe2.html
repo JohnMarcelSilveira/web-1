@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matemática</title>
+  </head>
+  <body>
+    <h2>Matemática</h2>
+    <form action="exe2.php" method="post">
+     <label for="numero1">Número 1:</label>
+    <input type="number" name="numero1" required><br>
+
+    <label for="numero2">Número 2:</label>
+    <input type="number" name="numero2" required><br>
+
+    <label for="adicao">Qual é a soma de <?php echo $numero1; ?> e <?php echo $numero2; ?>?</label>
+    <input type="number" name="adicao" required><br>
+
+    <label for="subtracao">Qual é a diferença entre <?php echo $numero1; ?> e <?php echo $numero2; ?>?</label>
+    <input type="number" name="subtracao" required><br>
+
+    <label for="multiplicacao">Qual é o produto de <?php echo $numero1; ?> e <?php echo $numero2; ?>?</label>
+    <input type="number" name="multiplicacao" required><br>
+
+    <label for="divisao">Qual é o resultado da divisão de <?php echo $numero1; ?> por <?php echo $numero2; ?>?</label>
+    <input type="number" name="divisao" required><br>
+
+    <input type="submit" value="Verificar">
+    </form>
+  </body>
+</html>
