@@ -1,20 +1,31 @@
 <?php
 session_start();
-include 'conexao.php';
-
-$id = $_POST['id'];
-$data = $_POST['data'];
-$hora = $_POST['hora'];
-$motivo = $_POST['motivo'];
-
-$sql = "UPDATE consultas SET data = '$data', hora = '$hora', motivo = '$motivo' WHERE id = $id";
-
-if (mysqli_query($conn, $sql)) {
-    echo "Consulta editada com sucesso!";
-    header("Location: painel.php");
-} else {
-    echo "Erro: " . mysqli_error($conn);
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit;
 }
 
-mysqli_close($conn);
+include 'conexao.php';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_consulta = $_POST['id'];
+    $idade = $_POST['idade'];
+    $data = $_POST['data'];
+    $hora = $_POST['hora'];
+    $motivo = $_POST['motivo'];
+
+    // Atualiza a consulta no banco de dados
+    $sql = "UPDATE consultas SET idade = ?, data = ?, hora = ?, motivo = ? WHERE id = ? AND id_usuario = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssii", $idade, $data, $hora, $motivo, $id_consulta, $_SESSION['id_usuario']);
+
+    if ($stmt->execute()) {
+        header("Location: painel.php");
+        exit;
+    } else {
+        echo "Erro ao atualizar a consulta: " . $stmt->error;
+    }
+} else {
+    echo "Método de requisição inválido.";
+}
 ?>

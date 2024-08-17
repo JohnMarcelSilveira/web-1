@@ -4,6 +4,31 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit;
 }
+
+include 'conexao.php';
+
+// Verifica se o ID foi passado na URL
+if (isset($_GET['id'])) {
+    $id_consulta = $_GET['id'];
+
+    // Busca a consulta no banco de dados
+    $sql = "SELECT * FROM consultas WHERE id = ? AND id_usuario = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $id_consulta, $_SESSION['id_usuario']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Verifica se a consulta existe
+    if ($result->num_rows > 0) {
+        $consulta = $result->fetch_assoc();
+    } else {
+        echo "Consulta não encontrada ou você não tem permissão para editá-la.";
+        exit;
+    }
+} else {
+    echo "ID da consulta não fornecido.";
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,44 +56,28 @@ if (!isset($_SESSION['id_usuario'])) {
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="painel.php">Agenda Veterinária</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="painel.php">Consultas Marcadas</a>
-                    </li>
-                </ul>
-                <span class="navbar-text">
-                    Bem-vindo, <?php echo $_SESSION['nome']; ?>!
-                    <a href="index.php" class="btn btn-outline-light btn-sm ms-2">Sair</a>
-                </span>
-            </div>
-        </div>
-    </nav>
-
     <div class="container mt-4">
         <h2 class="mb-4">Editar Consulta</h2>
         <form action="processa_edicao.php" method="post">
-            <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+            <input type="hidden" name="id" value="<?php echo $consulta['id']; ?>">
+            <div class="mb-3">
+                <label for="idade" class="form-label">Idade:</label>
+                <input type="number" name="idade" id="idade" class="form-control" min="1" max="120" value="<?php echo $consulta['idade']; ?>" required>
+            </div>
             <div class="mb-3">
                 <label for="data" class="form-label">Data:</label>
-                <input type="date" name="data" id="data" class="form-control" required>
+                <input type="date" name="data" id="data" class="form-control" value="<?php echo $consulta['data']; ?>" required>
             </div>
             <div class="mb-3">
                 <label for="hora" class="form-label">Hora:</label>
-                <input type="time" name="hora" id="hora" class="form-control" required>
+                <input type="time" name="hora" id="hora" class="form-control" value="<?php echo $consulta['hora']; ?>" required>
             </div>
             <div class="mb-3">
                 <label for="motivo" class="form-label">Motivo:</label>
-                <textarea name="motivo" id="motivo" class="form-control" required></textarea>
+                <textarea name="motivo" id="motivo" class="form-control" rows="4" required><?php echo $consulta['motivo']; ?></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Editar Consulta</button>
+            <button type="submit" class="btn btn-primary">Atualizar Consulta</button>
         </form>
     </div>
 </body>
 </html>
-
-
-

@@ -48,9 +48,25 @@ if (!isset($_SESSION['id_usuario'])) {
         </div>
     </nav>
 
-    <div class="container mt-4">
+   <div class="container mt-4">
         <h2 class="mb-4">Marcar Nova Consulta</h2>
+
+        <?php if (isset($_SESSION['erros'])): ?>
+            <div class="alert alert-danger">
+                <ul>
+                    <?php foreach ($_SESSION['erros'] as $erro): ?>
+                        <li><?php echo $erro; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php unset($_SESSION['erros']); // Limpa os erros após exibir ?>
+        <?php endif; ?>
+
         <form action="processa_marcacao.php" method="post">
+            <div class="mb-3">
+                <label for="idade" class="form-label">Idade:</label>
+                <input type="number" name="idade" id="idade" class="form-control" min="1" max="120" required>
+            </div>
             <div class="mb-3">
                 <label for="data" class="form-label">Data:</label>
                 <input type="date" name="data" id="data" class="form-control" required>
@@ -66,5 +82,6 @@ if (!isset($_SESSION['id_usuario'])) {
             <button type="submit" class="btn btn-primary">Marcar Consulta</button>
         </form>
     </div>
+
 </body>
 </html>
